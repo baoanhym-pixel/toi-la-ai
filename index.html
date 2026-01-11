@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tôi là ai — mini demo</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        max-width: 720px;
+        margin: 48px auto;
+        padding: 0 16px;
+        line-height: 1.5;
+      }
+      .card {
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        padding: 16px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+      }
+      label { display: block; margin-top: 12px; font-weight: 600; }
+      input {
+        width: 100%;
+        padding: 10px 12px;
+        margin-top: 6px;
+        border: 1px solid #d1d5db;
+        border-radius: 10px;
+        font-size: 16px;
+      }
+      button {
+        margin-top: 14px;
+        padding: 10px 14px;
+        border: 0;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 700;
+        background: #111827;
+        color: white;
+      }
+      button.secondary {
+        background: #e5e7eb;
+        color: #111827;
+        margin-left: 8px;
+      }
+      #result {
+        margin-top: 16px;
+        padding: 12px;
+        border-radius: 12px;
+        background: #f3f4f6;
+        min-height: 44px;
+      }
+      .muted { color: #6b7280; font-size: 14px; margin-top: 6px; }
+    </style>
+  </head>
+  <body>
+    <h1>Tôi là ai?</h1>
+    <p class="muted">Demo vibe coding: nhập 3 ô → bấm nút → ra 1 câu giới thiệu.</p>
+
+    <div class="card">
+      <form id="form">
+        <label for="name">Tên</label>
+        <input id="name" placeholder="Ví dụ: Minh" />
+
+        <label for="role">Vai trò hiện tại</label>
+        <input id="role" placeholder="Ví dụ: sinh viên / nhân viên / đang học code" />
+
+        <label for="goal">Mục tiêu trong 30 ngày</label>
+        <input id="goal" placeholder="Ví dụ: ship 10 demo nhỏ" />
+
+        <button type="submit">Tạo giới thiệu</button>
+       <button type="button" class="secondary" id="copyBtn">Copy kết quả</button>
+
+        <div id="result" aria-live="polite">Chưa có giới thiệu…</div>
+
+      </form>
+    </div>
+
+    <script>
+      const form = document.getElementById("form");
+      const nameEl = document.getElementById("name");
+      const roleEl = document.getElementById("role");
+      const goalEl = document.getElementById("goal");
+      const resultEl = document.getElementById("result");
+      const copyBtn = document.getElementById("copyBtn");
+
+      function buildIntro(name, role, goal) {
+        const n = name?.trim() || "một người chưa đặt tên";
+        const r = role?.trim() || "đang khám phá bản thân";
+        const g = goal?.trim() || "tiến bộ từng ngày";
+        return `Tôi là ${n}. Hiện tôi đang ${r}. Trong 30 ngày tới, tôi muốn ${g}.`;
+      }
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault(); // không reload trang
+        const intro = buildIntro(nameEl.value, roleEl.value, goalEl.value);
+        resultEl.textContent = intro;
+      });
+
+      copyBtn.addEventListener("click", async () => {
+        const text = resultEl.textContent.trim();
+        if (!text) {
+          resultEl.textContent = "Hãy bấm “Tạo giới thiệu” trước rồi mới copy nhé.";
+          return;
+        }
+        try {
+          await navigator.clipboard.writeText(text);
+          resultEl.textContent = "✅ Đã copy! " + text;
+        } catch {
+          resultEl.textContent = "Không copy được (trình duyệt chặn). Bạn copy thủ công nhé: " + text;
+        }
+      });
+    </script>
+  </body>
+</html>
